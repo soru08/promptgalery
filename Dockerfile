@@ -15,21 +15,13 @@ WORKDIR /app
 # Copy all project files (including pre-built public/build assets)
 COPY . .
 
-# Install PHP dependencies only (no npm needed - assets pre-built)
+# Install PHP dependencies only
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Set permissions
 RUN chmod -R 775 storage bootstrap/cache \
-    && chown -R www-data:www-data storage bootstrap/cache
+    && chmod +x start.sh
 
-# Expose port
 EXPOSE 8080
 
-# Start script
-CMD sh -c "php artisan migrate --force && \
-    php artisan db:seed --force && \
-    php artisan storage:link && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache && \
-    php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"
+CMD ["sh", "start.sh"]

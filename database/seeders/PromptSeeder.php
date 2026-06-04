@@ -58,7 +58,7 @@ class PromptSeeder extends Seeder
         ];
 
         foreach ($prompts as $prompt) {
-            Prompt::create($prompt);
+            Prompt::firstOrCreate(['title' => $prompt['title']], $prompt);
         }
     }
 }
