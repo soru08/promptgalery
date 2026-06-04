@@ -1,5 +1,15 @@
 #!/bin/sh
 
+echo "=== Environment Check ==="
+echo "PORT: ${PORT}"
+echo "APP_ENV: ${APP_ENV}"
+if [ -z "$APP_KEY" ]; then
+  echo "APP_KEY is NOT set in environment!"
+else
+  echo "APP_KEY is set. Length: ${#APP_KEY}"
+  echo "APP_KEY start: $(echo "$APP_KEY" | cut -c 1-15)..."
+fi
+
 echo "=== Clearing stale cache ==="
 php artisan config:clear 2>/dev/null || rm -f bootstrap/cache/config.php bootstrap/cache/services.php
 
