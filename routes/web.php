@@ -10,23 +10,39 @@ Route::get('/', [PromptController::class, 'index'])->name('home');
 Route::post('/prompts/{prompt}/copy', [PromptController::class, 'incrementCopy'])->name('prompts.copy');
 
 Route::get('/debug-config', function() {
-    $env = file_exists(base_path('.env')) ? file_get_contents(base_path('.env')) : 'no .env';
-    $env = preg_replace('/(APP_KEY|DB_PASSWORD|DB_DATABASE|DB_USERNAME)=.*/', '$1=******', $env);
+    $env_lines = file_exists(base_path('.env')) ? file(base_path('.env')) : [];
+    $env_info = [];
+    foreach ($env_lines as $line) {
+        $line = trim($line);
+        if (!$line || str_contains($line, '=')) {
+            $parts = explode('=', $line, 2);
+            if (count($parts) === 2) {
+                $key = $parts[0];
+                $val = $parts[1];
+                $env_info[$key] = [
+                    'length' => strlen($val),
+                    'is_empty' => empty($val),
+                ];
+            }
+        }
+    }
 
     $config_path = base_path('bootstrap/cache/config.php');
-    $config_data = 'no config cache';
+    $config_info = [];
     if (file_exists($config_path)) {
         $config = require $config_path;
-        if (isset($config['app']['key'])) $config['app']['key'] = '******';
-        if (isset($config['database']['connections']['mysql']['password'])) $config['database']['connections']['mysql']['password'] = '******';
-        if (isset($config['database']['connections']['mysql']['database'])) $config['database']['connections']['mysql']['database'] = '******';
-        if (isset($config['database']['connections']['mysql']['username'])) $config['database']['connections']['mysql']['username'] = '******';
-        $config_data = json_encode($config);
+        $db = $config['database']['connections']['mysql'] ?? [];
+        $config_info = [
+            'host_len' => isset($db['host']) ? strlen($db['host']) : 0,
+            'database_len' => isset($db['database']) ? strlen($db['database']) : 0,
+            'username_len' => isset($db['username']) ? strlen($db['username']) : 0,
+            'password_len' => isset($db['password']) ? strlen($db['password']) : 0,
+        ];
     }
 
     return [
-        'env_file' => $env,
-        'cached_config' => json_decode($config_data, true),
+        'env_file_variables' => $env_info,
+        'cached_config_db_lengths' => $config_info,
     ];
 });
 
