@@ -1,5 +1,14 @@
 #!/bin/sh
 
+# Determine DB connection details from environment (standard Railway MySQL variables as fallback)
+DB_CONN_VAR="mysql"
+DB_HOST_VAR="${DB_HOST:-$MYSQLHOST}"
+DB_PORT_VAR="${DB_PORT:-$MYSQLPORT}"
+DB_PORT_VAR="${DB_PORT_VAR:-3306}"
+DB_DATABASE_VAR="${DB_DATABASE:-$MYSQLDATABASE}"
+DB_USERNAME_VAR="${DB_USERNAME:-$MYSQLUSER}"
+DB_PASSWORD_VAR="${DB_PASSWORD:-$MYSQLPASSWORD}"
+
 echo "=== Generating .env file from Railway environment ==="
 echo "APP_NAME=\"${APP_NAME:-PromptGallery}\"" > .env
 echo "APP_ENV=${APP_ENV:-production}" >> .env
@@ -14,18 +23,18 @@ else
   echo "APP_KEY was missing. Will generate a new one."
 fi
 
-echo "DB_CONNECTION=${DB_CONNECTION:-mysql}" >> .env
-echo "DB_HOST=${DB_HOST}" >> .env
-echo "DB_PORT=${DB_PORT:-3306}" >> .env
-echo "DB_DATABASE=${DB_DATABASE}" >> .env
-echo "DB_USERNAME=${DB_USERNAME}" >> .env
-echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
+echo "DB_CONNECTION=${DB_CONN_VAR}" >> .env
+echo "DB_HOST=${DB_HOST_VAR}" >> .env
+echo "DB_PORT=${DB_PORT_VAR}" >> .env
+echo "DB_DATABASE=${DB_DATABASE_VAR}" >> .env
+echo "DB_USERNAME=${DB_USERNAME_VAR}" >> .env
+echo "DB_PASSWORD=${DB_PASSWORD_VAR}" >> .env
 
-echo "SESSION_DRIVER=${SESSION_DRIVER:-file}" >> .env
-echo "CACHE_STORE=${CACHE_STORE:-file}" >> .env
-echo "QUEUE_CONNECTION=${QUEUE_CONNECTION:-sync}" >> .env
-echo "LOG_CHANNEL=${LOG_CHANNEL:-stderr}" >> .env
-echo "LOG_LEVEL=${LOG_LEVEL:-error}" >> .env
+echo "SESSION_DRIVER=file" >> .env
+echo "CACHE_STORE=file" >> .env
+echo "QUEUE_CONNECTION=sync" >> .env
+echo "LOG_CHANNEL=stderr" >> .env
+echo "LOG_LEVEL=error" >> .env
 
 # Generate fresh key if empty
 if [ -z "$APP_KEY" ]; then
