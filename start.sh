@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "=== Clearing stale cache ==="
+php artisan config:clear 2>/dev/null || rm -f bootstrap/cache/config.php bootstrap/cache/services.php
+
 echo "=== Running migrations ==="
 php artisan migrate --force
 
