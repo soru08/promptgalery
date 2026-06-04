@@ -33,27 +33,27 @@ if [ -z "$APP_KEY" ]; then
   php artisan key:generate
 fi
 
-echo "=== System Info & Permissions ==="
-echo "User: $(whoami)"
-echo "Current Dir: $(pwd)"
-ls -la .env
-ls -la bootstrap/cache/
+echo "=== System Info & Permissions ===" > public/start_log.txt
+echo "User: $(whoami)" >> public/start_log.txt
+echo "Current Dir: $(pwd)" >> public/start_log.txt
+ls -la .env >> public/start_log.txt 2>&1
+ls -la bootstrap/cache/ >> public/start_log.txt 2>&1
 
-echo "=== Generated .env Content (Masked) ==="
+echo "=== Generated .env Content (Masked) ===" >> public/start_log.txt
 if [ -f .env ]; then
-  cat .env | sed -E 's/DB_PASSWORD=.*/DB_PASSWORD=******/' | sed -E 's/APP_KEY=.*/APP_KEY=******/'
+  cat .env | sed -E 's/DB_PASSWORD=.*/DB_PASSWORD=******/' | sed -E 's/APP_KEY=.*/APP_KEY=******/' >> public/start_log.txt
 else
-  echo ".env file NOT found!"
+  echo ".env file NOT found!" >> public/start_log.txt
 fi
 
-echo "=== Clearing stale cache ==="
-php artisan config:clear 2>/dev/null || rm -f bootstrap/cache/config.php bootstrap/cache/services.php
+echo "=== Clearing stale cache ===" >> public/start_log.txt
+php artisan config:clear >> public/start_log.txt 2>&1 || rm -f bootstrap/cache/config.php bootstrap/cache/services.php
 
-echo "=== Running migrations ==="
-php artisan migrate --force
+echo "=== Running migrations ===" >> public/start_log.txt
+php artisan migrate --force >> public/start_log.txt 2>&1
 
-echo "=== Seeding database (skip if already exists) ==="
-php artisan db:seed --force 2>/dev/null || echo "Seeding skipped - data already exists"
+echo "=== Seeding database (skip if already exists) ===" >> public/start_log.txt
+php artisan db:seed --force >> public/start_log.txt 2>&1 || echo "Seeding skipped - data already exists" >> public/start_log.txt
 
 echo "=== Setting up storage ==="
 php artisan storage:link 2>/dev/null || true
