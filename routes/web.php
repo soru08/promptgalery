@@ -9,13 +9,24 @@ use App\Http\Controllers\PromptController;
 Route::get('/', [PromptController::class, 'index'])->name('home');
 Route::post('/prompts/{prompt}/copy', [PromptController::class, 'incrementCopy'])->name('prompts.copy');
 
-Route::get('/debug-env', function() {
+Route::get('/debug-config', function() {
+    $env = file_exists(base_path('.env')) ? file_get_contents(base_path('.env')) : 'no .env';
+    $env = preg_replace('/(APP_KEY|DB_PASSWORD|DB_DATABASE|DB_USERNAME)=.*/', '$1=******', $env);
+
+    $config_path = base_path('bootstrap/cache/config.php');
+    $config_data = 'no config cache';
+    if (file_exists($config_path)) {
+        $config = require $config_path;
+        if (isset($config['app']['key'])) $config['app']['key'] = '******';
+        if (isset($config['database']['connections']['mysql']['password'])) $config['database']['connections']['mysql']['password'] = '******';
+        if (isset($config['database']['connections']['mysql']['database'])) $config['database']['connections']['mysql']['database'] = '******';
+        if (isset($config['database']['connections']['mysql']['username'])) $config['database']['connections']['mysql']['username'] = '******';
+        $config_data = json_encode($config);
+    }
+
     return [
-        'app_key_env' => env('APP_KEY') ? 'set' : 'not set',
-        'app_key_getenv' => getenv('APP_KEY') ? 'set' : 'not set',
-        'config_key' => config('app.key') ? 'set' : 'not set',
-        'all_env_keys' => array_keys($_ENV),
-        'all_server_keys' => array_keys($_SERVER),
+        'env_file' => $env,
+        'cached_config' => json_decode($config_data, true),
     ];
 });
 
