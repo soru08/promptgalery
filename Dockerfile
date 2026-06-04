@@ -18,8 +18,9 @@ COPY . .
 # Install PHP dependencies only
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Set permissions
-RUN chmod -R 775 storage bootstrap/cache \
+# Set permissions to allow dynamic file creation/caching
+RUN chmod -R 777 storage bootstrap/cache \
+    && chmod 777 . \
     && chmod +x start.sh
 
 EXPOSE 8080

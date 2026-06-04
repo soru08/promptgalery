@@ -33,6 +33,19 @@ if [ -z "$APP_KEY" ]; then
   php artisan key:generate
 fi
 
+echo "=== System Info & Permissions ==="
+echo "User: $(whoami)"
+echo "Current Dir: $(pwd)"
+ls -la .env
+ls -la bootstrap/cache/
+
+echo "=== Generated .env Content (Masked) ==="
+if [ -f .env ]; then
+  cat .env | sed -E 's/DB_PASSWORD=.*/DB_PASSWORD=******/' | sed -E 's/APP_KEY=.*/APP_KEY=******/'
+else
+  echo ".env file NOT found!"
+fi
+
 echo "=== Clearing stale cache ==="
 php artisan config:clear 2>/dev/null || rm -f bootstrap/cache/config.php bootstrap/cache/services.php
 
