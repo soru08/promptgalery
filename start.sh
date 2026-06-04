@@ -1,13 +1,36 @@
 #!/bin/sh
 
-echo "=== Environment Check ==="
-echo "PORT: ${PORT}"
-echo "APP_ENV: ${APP_ENV}"
-if [ -z "$APP_KEY" ]; then
-  echo "APP_KEY is NOT set in environment!"
+echo "=== Generating .env file from Railway environment ==="
+echo "APP_NAME=\"${APP_NAME:-PromptGallery}\"" > .env
+echo "APP_ENV=${APP_ENV:-production}" >> .env
+echo "APP_DEBUG=${APP_DEBUG:-false}" >> .env
+echo "APP_URL=${APP_URL:-http://localhost}" >> .env
+
+if [ -n "$APP_KEY" ]; then
+  echo "APP_KEY=$APP_KEY" >> .env
+  echo "APP_KEY loaded from environment."
 else
-  echo "APP_KEY is set. Length: ${#APP_KEY}"
-  echo "APP_KEY start: $(echo "$APP_KEY" | cut -c 1-15)..."
+  echo "APP_KEY=" >> .env
+  echo "APP_KEY was missing. Will generate a new one."
+fi
+
+echo "DB_CONNECTION=${DB_CONNECTION:-mysql}" >> .env
+echo "DB_HOST=${DB_HOST}" >> .env
+echo "DB_PORT=${DB_PORT:-3306}" >> .env
+echo "DB_DATABASE=${DB_DATABASE}" >> .env
+echo "DB_USERNAME=${DB_USERNAME}" >> .env
+echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
+
+echo "SESSION_DRIVER=${SESSION_DRIVER:-file}" >> .env
+echo "CACHE_STORE=${CACHE_STORE:-file}" >> .env
+echo "QUEUE_CONNECTION=${QUEUE_CONNECTION:-sync}" >> .env
+echo "LOG_CHANNEL=${LOG_CHANNEL:-stderr}" >> .env
+echo "LOG_LEVEL=${LOG_LEVEL:-error}" >> .env
+
+# Generate fresh key if empty
+if [ -z "$APP_KEY" ]; then
+  echo "=== Generating fresh APP_KEY ==="
+  php artisan key:generate
 fi
 
 echo "=== Clearing stale cache ==="
