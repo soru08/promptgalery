@@ -3,23 +3,30 @@
 # Determine DB connection details from environment (standard Railway MySQL variables as fallback)
 DB_CONN_VAR="mysql"
 
-DB_HOST_VAR="${DB_HOST:-$MYSQLHOST}"
+# Allow override via the Railway-style MYSQL* variables when DB_* are not set.
+# Use :+ (set-and-not-empty) semantics so empty DB_* never clobber the pool.
+DB_HOST_VAR="${DB_HOST:-}"
+DB_HOST_VAR="${DB_HOST_VAR:-$MYSQLHOST}"
 DB_HOST_VAR="${DB_HOST_VAR:-$MYSQL_HOST}"
 DB_HOST_VAR="${DB_HOST_VAR:-mysql.railway.internal}"
 
-DB_PORT_VAR="${DB_PORT:-$MYSQLPORT}"
+DB_PORT_VAR="${DB_PORT:-}"
+DB_PORT_VAR="${DB_PORT_VAR:-$MYSQLPORT}"
 DB_PORT_VAR="${DB_PORT_VAR:-$MYSQL_PORT}"
 DB_PORT_VAR="${DB_PORT_VAR:-3306}"
 
-DB_DATABASE_VAR="${DB_DATABASE:-$MYSQLDATABASE}"
+DB_DATABASE_VAR="${DB_DATABASE:-}"
+DB_DATABASE_VAR="${DB_DATABASE_VAR:-$MYSQLDATABASE}"
 DB_DATABASE_VAR="${DB_DATABASE_VAR:-$MYSQL_DATABASE}"
 DB_DATABASE_VAR="${DB_DATABASE_VAR:-railway}"
 
-DB_USERNAME_VAR="${DB_USERNAME:-$MYSQLUSER}"
+DB_USERNAME_VAR="${DB_USERNAME:-}"
+DB_USERNAME_VAR="${DB_USERNAME_VAR:-$MYSQLUSER}"
 DB_USERNAME_VAR="${DB_USERNAME_VAR:-$MYSQL_USER}"
 DB_USERNAME_VAR="${DB_USERNAME_VAR:-root}"
 
-DB_PASSWORD_VAR="${DB_PASSWORD:-$MYSQLPASSWORD}"
+DB_PASSWORD_VAR="${DB_PASSWORD:-}"
+DB_PASSWORD_VAR="${DB_PASSWORD_VAR:-$MYSQLPASSWORD}"
 DB_PASSWORD_VAR="${DB_PASSWORD_VAR:-$MYSQL_PASSWORD}"
 
 # EXPORT to the shell environment so that PHP child processes (artisan commands, php serve)

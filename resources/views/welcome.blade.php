@@ -459,16 +459,12 @@
             @foreach($featuredPrompts as $prompt)
             <div class="prompt-card featured-card">
                 <div class="card-image-wrap">
-                    @php
-                        $imgTags = $prompt->style_tags ? implode(',', array_slice(explode(',', $prompt->style_tags), 0, 2)) : $prompt->title;
-                        $imgFallback = 'https://source.unsplash.com/400x220/?' . urlencode(strtolower(trim($imgTags)));
-                    @endphp
                     <img
                         class="card-image"
-                        src="{{ $prompt->image_path ? asset($prompt->image_path) : $imgFallback }}"
+                        src="{{ $prompt->image_path ? asset($prompt->image_path) : 'https://picsum.photos/seed/' . $prompt->id . '/400/220' }}"
                         alt="{{ $prompt->title }}"
                         loading="lazy"
-                        onerror="this.onerror=null;this.src='https://picsum.photos/seed/{{ $prompt->id }}/400/220'"
+                        onerror="this.onerror=null;this.style.background='var(--zinc)'"
                     >
                 </div>
                 <div class="card-header">
@@ -508,16 +504,12 @@
         @foreach($prompts as $prompt)
         <div class="prompt-card {{ $prompt->is_featured ? 'featured-card' : '' }}">
             <div class="card-image-wrap">
-                @php
-                    $imgTags = $prompt->style_tags ? implode(',', array_slice(explode(',', $prompt->style_tags), 0, 2)) : $prompt->title;
-                    $imgFallback = 'https://source.unsplash.com/400x220/?' . urlencode(strtolower(trim($imgTags)));
-                @endphp
                 <img
                     class="card-image"
-                    src="{{ $prompt->image_path ? asset($prompt->image_path) : $imgFallback }}"
+                    src="{{ $prompt->image_path ? asset($prompt->image_path) : 'https://picsum.photos/seed/' . $prompt->id . '/400/220' }}"
                     alt="{{ $prompt->title }}"
                     loading="lazy"
-                    onerror="this.onerror=null;this.src='https://picsum.photos/seed/{{ $prompt->id }}/400/220'"
+                    onerror="this.onerror=null;this.style.background='var(--zinc)'"
                 >
             </div>
             <div class="card-header">
