@@ -39,6 +39,7 @@ export DB_PORT="${DB_PORT_VAR}"
 export DB_DATABASE="${DB_DATABASE_VAR}"
 export DB_USERNAME="${DB_USERNAME_VAR}"
 export DB_PASSWORD="${DB_PASSWORD_VAR}"
+export MYSQL_ATTR_SSL_CA="${MYSQL_ATTR_SSL_CA:-/app/ca.pem}"
 export SESSION_DRIVER=file
 export CACHE_STORE=file
 export QUEUE_CONNECTION=sync
@@ -65,6 +66,7 @@ echo "DB_PORT=${DB_PORT}" >> .env
 echo "DB_DATABASE=${DB_DATABASE}" >> .env
 echo "DB_USERNAME=${DB_USERNAME}" >> .env
 echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
+echo "MYSQL_ATTR_SSL_CA=${MYSQL_ATTR_SSL_CA}" >> .env
 
 echo "SESSION_DRIVER=file" >> .env
 echo "CACHE_STORE=file" >> .env
